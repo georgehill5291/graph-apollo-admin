@@ -1,0 +1,9 @@
+query GetAllUser {
+    getAllUser {
+        _id
+        username
+        email
+        roles
+        createdAt
+    }
+}

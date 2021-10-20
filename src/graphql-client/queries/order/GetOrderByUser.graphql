@@ -1,0 +1,16 @@
+query GetOrderByUser {
+    getOrderByUser {
+        code
+        success
+        message
+        orders {
+            products {
+                title
+                desc
+                img
+                price
+            }
+            total
+        }
+    }
+}

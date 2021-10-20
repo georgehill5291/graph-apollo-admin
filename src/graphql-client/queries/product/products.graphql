@@ -1,0 +1,21 @@
+query Products($color: String!, $size: String!, $offset: Int!, $limit: Int!) {
+    products(color: $color, size: $size, offset: $offset, limit: $limit) {
+        hasNext
+        hasPrevious
+        totalDocs
+        next
+        previous
+        docs {
+            _id
+            title
+            desc
+            img
+            price
+            color
+            size
+            categories
+            createdAt
+            updatedAt
+        }
+    }
+}

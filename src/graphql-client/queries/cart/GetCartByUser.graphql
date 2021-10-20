@@ -1,0 +1,20 @@
+query GetCartByUser {
+    getCartByUser {
+        code
+        success
+        message
+        carts {
+            _id
+            userId
+            product {
+                _id
+                title
+                desc
+                img
+                price
+            }
+            quantity
+        }
+        total
+    }
+}
