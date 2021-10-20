@@ -2,13 +2,16 @@ import React from 'react'
 import PortalLayout from '../../src/components/layout/PortalLayout'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { useCheckAuth } from '../../src/utils/useCheckAuth'
-import { FieldError, RegisterInput, useRegisterMutation } from '../../src/generated/graphql'
+import { FieldError, RegisterInput } from '../../src/generated/graphql'
 import { useRouter } from 'next/router'
 import { mapFieldErrors } from '../../src/helper/mapFieldErrors'
-import { useToast, Button } from '@chakra-ui/react'
+import { useToast, Button, Heading } from '@chakra-ui/react'
 import InputField from '../../src/components/customComponent/InputField'
 import * as Yup from 'yup'
 import { initializeApollo } from '../../src/lib/apolloClient'
+import { useRegisterMutation } from './../../src/generated/graphql'
+import NextLink from 'next/link'
+import { Container } from '@material-ui/core'
 
 const initialValues: RegisterInput = {
     email: '',
@@ -62,32 +65,51 @@ const CreateUser = () => {
 
     return (
         <PortalLayout>
-            <Formik
-                initialValues={initialValues}
-                onSubmit={onRegisterSubmit}
-                validationSchema={validationSchema}
-            >
-                {({ isSubmitting }) => (
-                    <Form>
-                        <InputField
-                            name='username'
-                            placeholder='Username'
-                            label='Username'
-                            type='text'
-                        />
-                        <InputField name='email' placeholder='Email' label='Email' type='text' />
-                        <InputField
-                            name='password'
-                            placeholder='Password'
-                            label='Password'
-                            type='password'
-                        />
-                        <Button type='submit' colorScheme='teal' mt={4} isLoading={isSubmitting}>
-                            Register
-                        </Button>
-                    </Form>
-                )}
-            </Formik>
+            <Container>
+                <Heading>Create User</Heading>
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={onRegisterSubmit}
+                    validationSchema={validationSchema}
+                >
+                    {({ isSubmitting }) => (
+                        <Form>
+                            <InputField
+                                name='username'
+                                placeholder='Username'
+                                label='Username'
+                                type='text'
+                            />
+                            <InputField
+                                name='email'
+                                placeholder='Email'
+                                label='Email'
+                                type='text'
+                            />
+                            <InputField
+                                name='password'
+                                placeholder='Password'
+                                label='Password'
+                                type='password'
+                            />
+
+                            <NextLink href='/user-list'>
+                                <Button colorScheme='teal' mr={4} mt={4}>
+                                    Cancel
+                                </Button>
+                            </NextLink>
+                            <Button
+                                type='submit'
+                                colorScheme='teal'
+                                mt={4}
+                                isLoading={isSubmitting}
+                            >
+                                Save
+                            </Button>
+                        </Form>
+                    )}
+                </Formik>
+            </Container>
         </PortalLayout>
     )
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import PortalLayout from '../../../src/components/layout/PortalLayout'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { useRouter } from 'next/router'
-import { useToast, Button, Alert, AlertIcon, AlertTitle } from '@chakra-ui/react'
+import { useToast, Button, Alert, AlertIcon, AlertTitle, Heading } from '@chakra-ui/react'
 import * as Yup from 'yup'
 import { Container } from '@material-ui/core'
 import InputField from '../../../src/components/customComponent/InputField'
@@ -10,11 +10,13 @@ import { UpdateProductInput, useUpdateProductMutation } from '../../../src/gener
 import { initializeApollo } from '../../../src/lib/apolloClient'
 import { useProductQuery } from './../../../src/generated/graphql'
 import NextLink from 'next/link'
+import { useCheckAuth } from '../../../src/utils/useCheckAuth'
 
 const EditUser = () => {
     var router = useRouter()
     const toast = useToast()
 
+    const { data: authData, loading: authLoading } = useCheckAuth()
     const [updateProduct, { data, error, loading: updateProductLoading }] =
         useUpdateProductMutation()
 
@@ -79,6 +81,7 @@ const EditUser = () => {
     return (
         <PortalLayout>
             <Container>
+                <Heading>Edit Product</Heading>
                 <Formik
                     initialValues={initialValues}
                     onSubmit={onRegisterSubmit}
@@ -105,6 +108,11 @@ const EditUser = () => {
                                 label='Price'
                                 type='text'
                             />
+                            <NextLink href='/product-list'>
+                                <Button colorScheme='teal' mr={4} mt={4}>
+                                    Cancel
+                                </Button>
+                            </NextLink>
                             <Button
                                 type='submit'
                                 colorScheme='teal'

@@ -10,11 +10,12 @@ import {
 } from '../../src/generated/graphql'
 import { useRouter } from 'next/router'
 import { mapFieldErrors } from '../../src/helper/mapFieldErrors'
-import { useToast, Button } from '@chakra-ui/react'
+import { useToast, Button, Heading } from '@chakra-ui/react'
 import InputField from '../../src/components/customComponent/InputField'
 import * as Yup from 'yup'
 import { initializeApollo } from '../../src/lib/apolloClient'
 import { Container } from '@material-ui/core'
+import NextLink from 'next/link'
 
 const initialValues: CreateProductInput = {
     title: '',
@@ -24,6 +25,8 @@ const initialValues: CreateProductInput = {
 }
 
 const CreateProduct = () => {
+    const { data: authData, loading: authLoading } = useCheckAuth()
+
     const [createProduct, { data, error, loading: createProductLoading }] =
         useCreateProductMutation()
 
@@ -39,13 +42,16 @@ const CreateProduct = () => {
         price: Yup.string().required('Required field.'),
     })
 
-    const onRegisterSubmit = async (
+    const onSubmitCreateProduct = async (
         values: CreateProductInput,
         { setErrors }: FormikHelpers<CreateProductInput>
     ) => {
         const response = await createProduct({
             variables: {
-                createProductInput: values,
+                createProductInput: {
+                    ...values,
+                    price: values.price.toString(),
+                },
             },
         })
 
@@ -67,9 +73,10 @@ const CreateProduct = () => {
     return (
         <PortalLayout>
             <Container>
+                <Heading>Create Product</Heading>
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={onRegisterSubmit}
+                    onSubmit={onSubmitCreateProduct}
                     validationSchema={validationSchema}
                 >
                     {({ isSubmitting }) => (
@@ -91,16 +98,24 @@ const CreateProduct = () => {
                                 name='price'
                                 placeholder='Price'
                                 label='Price'
-                                type='text'
+                                type='number'
                             />
-                            <Button
-                                type='submit'
-                                colorScheme='teal'
-                                mt={4}
-                                isLoading={isSubmitting}
-                            >
-                                Save
-                            </Button>
+                            <div>
+                                <NextLink href='/product-list'>
+                                    <Button colorScheme='teal' mr={4} mt={4}>
+                                        Cancel
+                                    </Button>
+                                </NextLink>
+
+                                <Button
+                                    type='submit'
+                                    colorScheme='teal'
+                                    mt={4}
+                                    isLoading={isSubmitting}
+                                >
+                                    Save
+                                </Button>
+                            </div>
                         </Form>
                     )}
                 </Formik>
