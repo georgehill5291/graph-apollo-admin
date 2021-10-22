@@ -7,6 +7,7 @@ import { IncomingHttpHeaders } from 'http'
 import fetch from 'isomorphic-unfetch'
 import { onError } from '@apollo/client/link/error'
 import router from 'next/router'
+import { createUploadLink } from 'apollo-upload-client'
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__'
 
@@ -43,11 +44,20 @@ function createApolloClient(headers: IncomingHttpHeaders | null = null) {
         uri: process.env.NEXT_PUBLIC_API_URL, // Server URL (must be absolute)
         credentials: 'include', // Additional fetch() options like `credentials` or `headers`,
         fetch: enhancedFetch,
+        fetchOptions: { credentials: 'include' },
     })
 
     return new ApolloClient({
         ssrMode: typeof window === 'undefined',
-        link: from([errorLink, httpLink]),
+        // link: from([errorLink, httpLink]),
+        link: createUploadLink({
+            uri: process.env.NEXT_PUBLIC_API_URL as string,
+            headers: {
+                cookie: headers?.cookie ?? '',
+            },
+            fetch,
+            fetchOptions: { credentials: 'include' },
+        }),
         credentials: 'include',
         cache: new InMemoryCache(),
     })

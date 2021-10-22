@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PortalLayout from '../../src/components/layout/PortalLayout'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { useCheckAuth } from '../../src/utils/useCheckAuth'
@@ -16,6 +16,8 @@ import * as Yup from 'yup'
 import { initializeApollo } from '../../src/lib/apolloClient'
 import { Container } from '@material-ui/core'
 import NextLink from 'next/link'
+import SelectFileUpload from './../../src/components/customComponent/SelectFileUpload'
+import { gql, useMutation } from '@apollo/client'
 
 const initialValues: CreateProductInput = {
     title: '',
@@ -24,11 +26,30 @@ const initialValues: CreateProductInput = {
     price: '',
 }
 
+const uploadFileMutation = gql`
+    mutation CreateProduct($createProductInput: CreateProductInput!, $productImage: Upload!) {
+        createProduct(productImage: $productImage) {
+            code
+            success
+            message
+            product {
+                title
+                desc
+                img
+                price
+            }
+        }
+    }
+`
+
 const CreateProduct = () => {
     const { data: authData, loading: authLoading } = useCheckAuth()
+    const [fileToUpload, setFileToUpload] = useState<File>()
 
     const [createProduct, { data, error, loading: createProductLoading }] =
         useCreateProductMutation()
+
+    // const [createProductV2, { loading: createProductLoadingV2 }] = useMutation(uploadFileMutation)
 
     // const { data: authData, loading: authLoading } = useCheckAuth()
 
@@ -52,6 +73,7 @@ const CreateProduct = () => {
                     ...values,
                     price: values.price.toString(),
                 },
+                productImage: fileToUpload,
             },
         })
 
@@ -99,6 +121,13 @@ const CreateProduct = () => {
                                 placeholder='Price'
                                 label='Price'
                                 type='number'
+                            />
+                            <SelectFileUpload
+                                name='productImage'
+                                placeholder='Product Image'
+                                label='Product Image'
+                                type='file'
+                                setFileToUpload={setFileToUpload}
                             />
                             <div>
                                 <NextLink href='/product-list'>

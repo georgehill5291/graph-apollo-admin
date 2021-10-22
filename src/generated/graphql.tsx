@@ -14,6 +14,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type BaseMutationRepsponse = {
@@ -105,6 +107,7 @@ export type Mutation = {
   register?: Maybe<UserMutationResponse>;
   updateCart: CartMutationRespsone;
   updateProduct: ProductMutaionReponse;
+  uploadImage: Scalars['Boolean'];
 };
 
 
@@ -115,6 +118,7 @@ export type MutationCreateCartArgs = {
 
 export type MutationCreateProductArgs = {
   createProductInput: CreateProductInput;
+  productImage: Scalars['Upload'];
 };
 
 
@@ -150,6 +154,11 @@ export type MutationUpdateCartArgs = {
 
 export type MutationUpdateProductArgs = {
   updateProductInput: UpdateProductInput;
+};
+
+
+export type MutationUploadImageArgs = {
+  productImage: Scalars['Upload'];
 };
 
 export type Order = {
@@ -253,6 +262,7 @@ export type UpdateProductInput = {
   title: Scalars['String'];
 };
 
+
 export type User = {
   __typename?: 'User';
   _id: Scalars['ID'];
@@ -323,6 +333,7 @@ export type UpdateCartMutation = { __typename?: 'Mutation', updateCart: { __type
 
 export type CreateProductMutationVariables = Exact<{
   createProductInput: CreateProductInput;
+  productImage: Scalars['Upload'];
 }>;
 
 
@@ -649,8 +660,11 @@ export type UpdateCartMutationHookResult = ReturnType<typeof useUpdateCartMutati
 export type UpdateCartMutationResult = Apollo.MutationResult<UpdateCartMutation>;
 export type UpdateCartMutationOptions = Apollo.BaseMutationOptions<UpdateCartMutation, UpdateCartMutationVariables>;
 export const CreateProductDocument = gql`
-    mutation CreateProduct($createProductInput: CreateProductInput!) {
-  createProduct(createProductInput: $createProductInput) {
+    mutation CreateProduct($createProductInput: CreateProductInput!, $productImage: Upload!) {
+  createProduct(
+    createProductInput: $createProductInput
+    productImage: $productImage
+  ) {
     code
     success
     message
@@ -679,6 +693,7 @@ export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutat
  * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
  *   variables: {
  *      createProductInput: // value for 'createProductInput'
+ *      productImage: // value for 'productImage'
  *   },
  * });
  */

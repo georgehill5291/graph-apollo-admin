@@ -1,5 +1,5 @@
-mutation CreateProduct($createProductInput: CreateProductInput!) {
-    createProduct(createProductInput: $createProductInput) {
+mutation CreateProduct($createProductInput: CreateProductInput!, $productImage: Upload!) {
+    createProduct(createProductInput: $createProductInput, productImage: $productImage) {
         code
         success
         message
