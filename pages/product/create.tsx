@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PortalLayout from '../../src/components/layout/PortalLayout'
-import { Form, Formik, FormikHelpers } from 'formik'
+import { FastField, Form, Formik, FormikHelpers } from 'formik'
 import { useCheckAuth } from '../../src/utils/useCheckAuth'
 import {
     CreateProductInput,
@@ -18,12 +18,24 @@ import { Container } from '@material-ui/core'
 import NextLink from 'next/link'
 import SelectFileUpload from './../../src/components/customComponent/SelectFileUpload'
 import { gql, useMutation } from '@apollo/client'
+import SelectDropdownField from '../../src/components/customComponent/SelectDropdownField'
+import { Classification } from '../../src/utils/types'
+import { default as Select } from 'react-select'
+import { FormLabel, FormControl } from '@chakra-ui/react'
+import {
+    categoryClassification,
+    colorClassification,
+    sizeClassification,
+} from '../../src/utils/constant'
 
 const initialValues: CreateProductInput = {
     title: '',
     desc: '',
     img: '',
     price: '',
+    size: [],
+    color: [],
+    categories: [],
 }
 
 const uploadFileMutation = gql`
@@ -67,11 +79,15 @@ const CreateProduct = () => {
         values: CreateProductInput,
         { setErrors }: FormikHelpers<CreateProductInput>
     ) => {
+        console.log('values', values)
         const response = await createProduct({
             variables: {
                 createProductInput: {
                     ...values,
                     price: values.price.toString(),
+                    size: (values.size as any).map((t: { value: any }) => t),
+                    color: (values.color as any).map((t: { value: any }) => t),
+                    categories: (values.categories as any).map((t: { value: any }) => t),
                 },
                 productImage: fileToUpload,
             },
@@ -101,7 +117,7 @@ const CreateProduct = () => {
                     onSubmit={onSubmitCreateProduct}
                     validationSchema={validationSchema}
                 >
-                    {({ isSubmitting }) => (
+                    {(props) => (
                         <Form>
                             <InputField
                                 name='title'
@@ -129,6 +145,29 @@ const CreateProduct = () => {
                                 type='file'
                                 setFileToUpload={setFileToUpload}
                             />
+                            <SelectDropdownField
+                                name='size'
+                                placeholder='Size'
+                                label='Size'
+                                options={sizeClassification}
+                                form={props}
+                            />
+                            <SelectDropdownField
+                                name='color'
+                                placeholder='Color'
+                                label='Color'
+                                options={colorClassification}
+                                form={props}
+                            />
+
+                            <SelectDropdownField
+                                name='categories'
+                                placeholder='Catetories'
+                                label='Catetories'
+                                options={categoryClassification}
+                                form={props}
+                            />
+
                             <div>
                                 <NextLink href='/product-list'>
                                     <Button colorScheme='teal' mr={4} mt={4}>
@@ -140,7 +179,7 @@ const CreateProduct = () => {
                                     type='submit'
                                     colorScheme='teal'
                                     mt={4}
-                                    isLoading={isSubmitting}
+                                    isLoading={props.isSubmitting}
                                 >
                                     Save
                                 </Button>

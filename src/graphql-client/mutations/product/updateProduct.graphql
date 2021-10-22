@@ -1,5 +1,5 @@
-mutation UpdateProduct($updateProductInput: UpdateProductInput!) {
-    updateProduct(updateProductInput: $updateProductInput) {
+mutation UpdateProduct($updateProductInput: UpdateProductInput!, $productImage: Upload) {
+    updateProduct(updateProductInput: $updateProductInput, productImage: $productImage) {
         code
         success
         message

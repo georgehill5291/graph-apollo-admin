@@ -8,6 +8,9 @@ mutation CreateProduct($createProductInput: CreateProductInput!, $productImage: 
             desc
             img
             price
+            categories
+            size
+            color
         }
     }
 }

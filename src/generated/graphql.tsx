@@ -50,9 +50,12 @@ export type CreateCartInput = {
 };
 
 export type CreateProductInput = {
+  categories: Array<Scalars['String']>;
+  color: Array<Scalars['String']>;
   desc: Scalars['String'];
   img: Scalars['String'];
   price: Scalars['String'];
+  size: Array<Scalars['String']>;
   title: Scalars['String'];
 };
 
@@ -118,7 +121,7 @@ export type MutationCreateCartArgs = {
 
 export type MutationCreateProductArgs = {
   createProductInput: CreateProductInput;
-  productImage: Scalars['Upload'];
+  productImage?: Maybe<Scalars['Upload']>;
 };
 
 
@@ -153,6 +156,7 @@ export type MutationUpdateCartArgs = {
 
 
 export type MutationUpdateProductArgs = {
+  productImage?: Maybe<Scalars['Upload']>;
   updateProductInput: UpdateProductInput;
 };
 
@@ -255,10 +259,13 @@ export type UpdateCartInput = {
 };
 
 export type UpdateProductInput = {
+  categories: Array<Scalars['String']>;
+  color: Array<Scalars['String']>;
   desc: Scalars['String'];
   id: Scalars['ID'];
   img: Scalars['String'];
   price: Scalars['Float'];
+  size: Array<Scalars['String']>;
   title: Scalars['String'];
 };
 
@@ -337,7 +344,7 @@ export type CreateProductMutationVariables = Exact<{
 }>;
 
 
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'ProductMutaionReponse', code: number, success: boolean, message?: Maybe<string>, product?: Maybe<{ __typename?: 'Product', title: string, desc: string, img: string, price: number }> } };
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'ProductMutaionReponse', code: number, success: boolean, message?: Maybe<string>, product?: Maybe<{ __typename?: 'Product', title: string, desc: string, img: string, price: number, categories: Array<string>, size: Array<string>, color: Array<string> }> } };
 
 export type DeleteProductMutationVariables = Exact<{
   id: Scalars['String'];
@@ -348,6 +355,7 @@ export type DeleteProductMutation = { __typename?: 'Mutation', deleteProduct: bo
 
 export type UpdateProductMutationVariables = Exact<{
   updateProductInput: UpdateProductInput;
+  productImage?: Maybe<Scalars['Upload']>;
 }>;
 
 
@@ -673,6 +681,9 @@ export const CreateProductDocument = gql`
       desc
       img
       price
+      categories
+      size
+      color
     }
   }
 }
@@ -736,8 +747,11 @@ export type DeleteProductMutationHookResult = ReturnType<typeof useDeleteProduct
 export type DeleteProductMutationResult = Apollo.MutationResult<DeleteProductMutation>;
 export type DeleteProductMutationOptions = Apollo.BaseMutationOptions<DeleteProductMutation, DeleteProductMutationVariables>;
 export const UpdateProductDocument = gql`
-    mutation UpdateProduct($updateProductInput: UpdateProductInput!) {
-  updateProduct(updateProductInput: $updateProductInput) {
+    mutation UpdateProduct($updateProductInput: UpdateProductInput!, $productImage: Upload) {
+  updateProduct(
+    updateProductInput: $updateProductInput
+    productImage: $productImage
+  ) {
     code
     success
     message
@@ -766,6 +780,7 @@ export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutat
  * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
  *   variables: {
  *      updateProductInput: // value for 'updateProductInput'
+ *      productImage: // value for 'productImage'
  *   },
  * });
  */
