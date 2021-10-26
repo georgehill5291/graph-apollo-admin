@@ -1,30 +1,28 @@
-import React, { useState } from 'react'
-import PortalLayout from '../../../src/components/layout/PortalLayout'
-import { Form, Formik, FormikHelpers } from 'formik'
-import { useRouter } from 'next/router'
-import { useToast, Button, Alert, AlertIcon, AlertTitle, Heading, Image } from '@chakra-ui/react'
-import * as Yup from 'yup'
+import { Alert, AlertIcon, AlertTitle, Button, Heading, Image, useToast } from '@chakra-ui/react'
 import { Container } from '@material-ui/core'
+import { Form, Formik } from 'formik'
+import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import * as Yup from 'yup'
 import InputField from '../../../src/components/customComponent/InputField'
+import SelectDropdownField from '../../../src/components/customComponent/SelectDropdownField'
+import SelectFileUpload from '../../../src/components/customComponent/SelectFileUpload'
+import PortalLayout from '../../../src/components/layout/PortalLayout'
 import { UpdateProductInput, useUpdateProductMutation } from '../../../src/generated/graphql'
 import { initializeApollo } from '../../../src/lib/apolloClient'
-import { useProductQuery } from './../../../src/generated/graphql'
-import NextLink from 'next/link'
-import { useCheckAuth } from '../../../src/utils/useCheckAuth'
-import SelectFileUpload from '../../../src/components/customComponent/SelectFileUpload'
-import SelectDropdownField from '../../../src/components/customComponent/SelectDropdownField'
 import {
     categoryClassification,
     colorClassification,
     sizeClassification,
 } from '../../../src/utils/constant'
+import { useProductQuery } from './../../../src/generated/graphql'
 
 const EditUser = () => {
     var router = useRouter()
     const toast = useToast()
 
     const [fileToUpload, setFileToUpload] = useState<File>()
-    const { data: authData, loading: authLoading } = useCheckAuth()
     const [updateProduct, { data, error, loading: updateProductLoading }] =
         useUpdateProductMutation()
 

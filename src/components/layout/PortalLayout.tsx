@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
+import { useCheckAuth } from '../../utils/useCheckAuth'
 import Wrapper from '../customComponent/Wrapper'
+import LoadingView from '../shared/LoadingView'
 import TopBar from '../shared/topbar/TopBar'
 import Sidebar from '../sidebar/Sidebar'
 
@@ -8,6 +10,12 @@ interface IProps {
 }
 
 const PortalLayout = ({ children }: IProps) => {
+    const { data: authData, loading: authLoading } = useCheckAuth()
+
+    if (authLoading || !authData?.me) {
+        return <LoadingView />
+    }
+
     return (
         <>
             <TopBar />

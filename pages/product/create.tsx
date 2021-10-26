@@ -1,32 +1,22 @@
-import React, { useState } from 'react'
-import PortalLayout from '../../src/components/layout/PortalLayout'
-import { FastField, Form, Formik, FormikHelpers } from 'formik'
-import { useCheckAuth } from '../../src/utils/useCheckAuth'
-import {
-    CreateProductInput,
-    FieldError,
-    useCreateProductMutation,
-    useRegisterMutation,
-} from '../../src/generated/graphql'
-import { useRouter } from 'next/router'
-import { mapFieldErrors } from '../../src/helper/mapFieldErrors'
-import { useToast, Button, Heading } from '@chakra-ui/react'
-import InputField from '../../src/components/customComponent/InputField'
-import * as Yup from 'yup'
-import { initializeApollo } from '../../src/lib/apolloClient'
+import { gql } from '@apollo/client'
+import { Button, Heading, useToast } from '@chakra-ui/react'
 import { Container } from '@material-ui/core'
+import { Form, Formik, FormikHelpers } from 'formik'
 import NextLink from 'next/link'
-import SelectFileUpload from './../../src/components/customComponent/SelectFileUpload'
-import { gql, useMutation } from '@apollo/client'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import * as Yup from 'yup'
+import InputField from '../../src/components/customComponent/InputField'
 import SelectDropdownField from '../../src/components/customComponent/SelectDropdownField'
-import { Classification } from '../../src/utils/types'
-import { default as Select } from 'react-select'
-import { FormLabel, FormControl } from '@chakra-ui/react'
+import PortalLayout from '../../src/components/layout/PortalLayout'
+import { CreateProductInput, useCreateProductMutation } from '../../src/generated/graphql'
+import { initializeApollo } from '../../src/lib/apolloClient'
 import {
     categoryClassification,
     colorClassification,
     sizeClassification,
 } from '../../src/utils/constant'
+import SelectFileUpload from './../../src/components/customComponent/SelectFileUpload'
 
 const initialValues: CreateProductInput = {
     title: '',
@@ -55,15 +45,10 @@ const uploadFileMutation = gql`
 `
 
 const CreateProduct = () => {
-    const { data: authData, loading: authLoading } = useCheckAuth()
     const [fileToUpload, setFileToUpload] = useState<File>()
 
     const [createProduct, { data, error, loading: createProductLoading }] =
         useCreateProductMutation()
-
-    // const [createProductV2, { loading: createProductLoadingV2 }] = useMutation(uploadFileMutation)
-
-    // const { data: authData, loading: authLoading } = useCheckAuth()
 
     var router = useRouter()
     const toast = useToast()

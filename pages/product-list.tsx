@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import React, { useState, useEffect } from 'react'
 import PortalLayout from '../src/components/layout/PortalLayout'
 import {
+    ProductDocument,
     useDeleteProductMutation,
     useProductQuery,
     useProductsQuery,
@@ -13,7 +14,9 @@ import { Image } from '@chakra-ui/image'
 import { DataGrid } from '@mui/x-data-grid'
 import LoadingView from '../src/components/shared/LoadingView'
 import DeletePopup from '../src/components/shared/DeletePopup'
-import { useCheckAuth } from '../src/utils/useCheckAuth'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
+import { addApolloState, initializeApollo } from '../src/lib/apolloClient'
+import { ProductsDocument } from './../src/generated/graphql'
 
 const ProductList = () => {
     const router = useRouter()
@@ -22,7 +25,6 @@ const ProductList = () => {
     const [loading, setLoading] = useState(false)
     const [currentProductId, setCurrentProductId] = useState('')
     const [open, setOpen] = useState(false)
-    const { data: authData, loading: authLoading } = useCheckAuth()
     const [deleteProduct, { error, loading: deleteProductLoading }] = useDeleteProductMutation()
 
     const {
@@ -151,6 +153,26 @@ const ProductList = () => {
             />
         </PortalLayout>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (
+    context: GetServerSidePropsContext
+) => {
+    const apolloClient = initializeApollo({ headers: context.req.headers })
+
+    await apolloClient.query({
+        query: ProductsDocument,
+        variables: {
+            color: '',
+            size: '',
+            offset: 0,
+            limit: 5,
+        },
+    })
+
+    return addApolloState(apolloClient, {
+        props: {},
+    })
 }
 
 export default ProductList

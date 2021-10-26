@@ -1,17 +1,16 @@
-import React from 'react'
-import PortalLayout from '../../src/components/layout/PortalLayout'
+import { Button, Heading, useToast } from '@chakra-ui/react'
+import { Container } from '@material-ui/core'
 import { Form, Formik, FormikHelpers } from 'formik'
-import { useCheckAuth } from '../../src/utils/useCheckAuth'
-import { FieldError, RegisterInput } from '../../src/generated/graphql'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { mapFieldErrors } from '../../src/helper/mapFieldErrors'
-import { useToast, Button, Heading } from '@chakra-ui/react'
-import InputField from '../../src/components/customComponent/InputField'
+import React from 'react'
 import * as Yup from 'yup'
+import InputField from '../../src/components/customComponent/InputField'
+import PortalLayout from '../../src/components/layout/PortalLayout'
+import { FieldError, RegisterInput } from '../../src/generated/graphql'
+import { mapFieldErrors } from '../../src/helper/mapFieldErrors'
 import { initializeApollo } from '../../src/lib/apolloClient'
 import { useRegisterMutation } from './../../src/generated/graphql'
-import NextLink from 'next/link'
-import { Container } from '@material-ui/core'
 
 const initialValues: RegisterInput = {
     email: '',
@@ -21,8 +20,6 @@ const initialValues: RegisterInput = {
 
 const CreateUser = () => {
     const [registerUser, { data, error, loading: _registerUserLoading }] = useRegisterMutation()
-
-    const { data: authData, loading: authLoading } = useCheckAuth()
 
     var router = useRouter()
     const toast = useToast()

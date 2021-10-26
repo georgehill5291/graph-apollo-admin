@@ -1,10 +1,11 @@
 import { Button } from '@chakra-ui/button'
 import { AccountCircleOutlined, Language, NotificationsNone, Settings } from '@material-ui/icons'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import React from 'react'
 import styled from 'styled-components'
 import { MeDocument, MeQuery, useLogoutMutation, useMeQuery } from '../../../generated/graphql'
-import { initializeApollo } from '../../../lib/apolloClient'
+import { addApolloState, initializeApollo } from '../../../lib/apolloClient'
 
 const DropdownContent = styled.div`
     display: none;
