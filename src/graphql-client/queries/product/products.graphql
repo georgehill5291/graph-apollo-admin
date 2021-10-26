@@ -1,5 +1,17 @@
-query Products($color: String!, $size: String!, $offset: Int!, $limit: Int!) {
-    products(color: $color, size: $size, offset: $offset, limit: $limit) {
+query Products(
+    $productName: String!
+    $color: String!
+    $size: String!
+    $offset: Int!
+    $limit: Int!
+) {
+    products(
+        productName: $productName
+        color: $color
+        size: $size
+        offset: $offset
+        limit: $limit
+    ) {
         hasNext
         hasPrevious
         totalDocs

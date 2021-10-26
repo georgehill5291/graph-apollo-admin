@@ -25,6 +25,7 @@ const ProductList = () => {
     const [loading, setLoading] = useState(false)
     const [currentProductId, setCurrentProductId] = useState('')
     const [open, setOpen] = useState(false)
+    const [productName, setProductName] = useState('')
     const [deleteProduct, { error, loading: deleteProductLoading }] = useDeleteProductMutation()
 
     const {
@@ -33,6 +34,7 @@ const ProductList = () => {
         networkStatus,
     } = useProductsQuery({
         variables: {
+            productName: (router.query.productName as string) || '',
             color: (router.query.color as string) || '',
             size: (router.query.size as string) || '',
             offset: (parseInt(router.query.page as string) - 1) * 5 || 0,
@@ -47,13 +49,20 @@ const ProductList = () => {
         const params = Object.fromEntries(urlSearchParams.entries())
 
         router.push({
-            search: `page=${page + 1}`, // query string
+            search: `productName=${productName}&page=${page + 1}`, // query string
         })
     }, [page])
 
     const handleClickOpen = (id: string) => {
         setOpen(true)
         setCurrentProductId(id)
+    }
+
+    const handleFilter = () => {
+        setPage(0)
+        router.push({
+            search: `productName=${productName}&page=1`, // query string
+        })
     }
 
     const columns = [
@@ -116,11 +125,20 @@ const ProductList = () => {
 
     return (
         <PortalLayout>
-            <h2 className='listTitle'>Product List</h2>
+            <h1 className='listTitle'>Product List</h1>
             <div className='userListButtonWrapper'>
-                <div className='userListButtonLeft'>Left</div>
+                <div className='userListButtonLeft'>
+                    <input
+                        className='userListProductNameFilter'
+                        placeholder='Product name'
+                        value={productName}
+                        onChange={(event) => setProductName(event.target.value)}
+                    ></input>
+                </div>
                 <div className='userListButtonRight'>
-                    <button className='userListButtonFilter'>Filter</button>
+                    <button className='userListButtonFilter' onClick={handleFilter}>
+                        Filter
+                    </button>
                     <NextLink href='/product/create'>
                         <button className='userListButtonAdd'>Add</button>
                     </NextLink>
@@ -153,26 +171,6 @@ const ProductList = () => {
             />
         </PortalLayout>
     )
-}
-
-export const getServerSideProps: GetServerSideProps = async (
-    context: GetServerSidePropsContext
-) => {
-    const apolloClient = initializeApollo({ headers: context.req.headers })
-
-    await apolloClient.query({
-        query: ProductsDocument,
-        variables: {
-            color: '',
-            size: '',
-            offset: 0,
-            limit: 5,
-        },
-    })
-
-    return addApolloState(apolloClient, {
-        props: {},
-    })
 }
 
 export default ProductList

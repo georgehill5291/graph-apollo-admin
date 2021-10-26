@@ -1,5 +1,5 @@
-query GetAllUser {
-    getAllUser {
+query GetAllUser($email: String!) {
+    getAllUser(email: $email) {
         _id
         username
         email

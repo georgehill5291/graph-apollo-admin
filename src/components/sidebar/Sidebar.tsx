@@ -1,13 +1,18 @@
 import { LineStyle, Timeline, TrendingUp } from '@material-ui/icons'
 import React from 'react'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
 
 const Sidebar = () => {
+    const router = useRouter()
+
     return (
         <div className='sidebar'>
             <div className='sidebarWrapper'>
                 <div className='sidebarMenu'>
-                    <h3 className='sidebarTitle'>Dashboard</h3>
+                    <h3 className={`sidebarTitle ${router.pathname == '/' ? 'active' : ''}`}>
+                        Dashboard
+                    </h3>
                     <ul className='sidebarList'>
                         <NextLink href='/'>
                             <li className='sidebarListItem'>
@@ -27,10 +32,14 @@ const Sidebar = () => {
                 </div>
                 <hr />
                 <div className='sidebarMenu'>
-                    <h3 className='sidebarTitle'>Quick Menu</h3>
+                    <h3 className={`sidebarTitle`}>Quick Menu</h3>
                     <ul className='sidebarList'>
                         <NextLink href='/user-list'>
-                            <li className='sidebarListItem'>
+                            <li
+                                className={`sidebarListItem ${
+                                    router.pathname === '/user-list' ? 'active' : ''
+                                }`}
+                            >
                                 <>
                                     <LineStyle className='sidebarIcon' />
                                     Users
@@ -38,7 +47,11 @@ const Sidebar = () => {
                             </li>
                         </NextLink>
                         <NextLink href='/product-list'>
-                            <li className='sidebarListItem'>
+                            <li
+                                className={`sidebarListItem ${
+                                    router.pathname === '/product-list' ? 'active' : ''
+                                }`}
+                            >
                                 <>
                                     <LineStyle className='sidebarIcon' />
                                     Products

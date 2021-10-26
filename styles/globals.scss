@@ -55,9 +55,14 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 20px;
+    margin: 10px;
 
     .userListButtonLeft {
+        .userListProductNameFilter {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid black;
+        }
     }
     .userListButtonRight {
         .userListButtonFilter {
@@ -77,4 +82,9 @@ a {
             font-weight: 600;
         }
     }
+}
+
+.listTitle {
+    font-weight: 600;
+    padding-left: 10px;
 }

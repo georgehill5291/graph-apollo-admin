@@ -220,6 +220,11 @@ export type Query = {
 };
 
 
+export type QueryGetAllUserArgs = {
+  email?: Maybe<Scalars['String']>;
+};
+
+
 export type QueryProductArgs = {
   id: Scalars['String'];
 };
@@ -229,6 +234,7 @@ export type QueryProductsArgs = {
   color?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
   offset?: Maybe<Scalars['Int']>;
+  productName?: Maybe<Scalars['String']>;
   size?: Maybe<Scalars['String']>;
   sort?: Maybe<Scalars['String']>;
 };
@@ -391,6 +397,7 @@ export type ProductQueryVariables = Exact<{
 export type ProductQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', _id: string, title: string, desc: string, img: string, categories: Array<string>, size: Array<string>, color: Array<string>, price: number }> };
 
 export type ProductsQueryVariables = Exact<{
+  productName: Scalars['String'];
   color: Scalars['String'];
   size: Scalars['String'];
   offset: Scalars['Int'];
@@ -400,7 +407,9 @@ export type ProductsQueryVariables = Exact<{
 
 export type ProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'PaginatedProducts', hasNext: boolean, hasPrevious: boolean, totalDocs: number, next?: Maybe<string>, previous?: Maybe<string>, docs: Array<{ __typename?: 'Product', _id: string, title: string, desc: string, img: string, price: number, color: Array<string>, size: Array<string>, categories: Array<string>, createdAt: any, updatedAt: any }> }> };
 
-export type GetAllUserQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllUserQueryVariables = Exact<{
+  email: Scalars['String'];
+}>;
 
 
 export type GetAllUserQuery = { __typename?: 'Query', getAllUser?: Maybe<Array<{ __typename?: 'User', _id: string, username: string, email: string, roles: Array<string>, createdAt: any }>> };
@@ -993,8 +1002,14 @@ export type ProductQueryHookResult = ReturnType<typeof useProductQuery>;
 export type ProductLazyQueryHookResult = ReturnType<typeof useProductLazyQuery>;
 export type ProductQueryResult = Apollo.QueryResult<ProductQuery, ProductQueryVariables>;
 export const ProductsDocument = gql`
-    query Products($color: String!, $size: String!, $offset: Int!, $limit: Int!) {
-  products(color: $color, size: $size, offset: $offset, limit: $limit) {
+    query Products($productName: String!, $color: String!, $size: String!, $offset: Int!, $limit: Int!) {
+  products(
+    productName: $productName
+    color: $color
+    size: $size
+    offset: $offset
+    limit: $limit
+  ) {
     hasNext
     hasPrevious
     totalDocs
@@ -1028,6 +1043,7 @@ export const ProductsDocument = gql`
  * @example
  * const { data, loading, error } = useProductsQuery({
  *   variables: {
+ *      productName: // value for 'productName'
  *      color: // value for 'color'
  *      size: // value for 'size'
  *      offset: // value for 'offset'
@@ -1047,8 +1063,8 @@ export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
 export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
 export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
 export const GetAllUserDocument = gql`
-    query GetAllUser {
-  getAllUser {
+    query GetAllUser($email: String!) {
+  getAllUser(email: $email) {
     _id
     username
     email
@@ -1070,10 +1086,11 @@ export const GetAllUserDocument = gql`
  * @example
  * const { data, loading, error } = useGetAllUserQuery({
  *   variables: {
+ *      email: // value for 'email'
  *   },
  * });
  */
-export function useGetAllUserQuery(baseOptions?: Apollo.QueryHookOptions<GetAllUserQuery, GetAllUserQueryVariables>) {
+export function useGetAllUserQuery(baseOptions: Apollo.QueryHookOptions<GetAllUserQuery, GetAllUserQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllUserQuery, GetAllUserQueryVariables>(GetAllUserDocument, options);
       }

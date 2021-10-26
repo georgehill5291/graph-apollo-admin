@@ -3,7 +3,8 @@ import { Button } from '@chakra-ui/react'
 import { DeleteOutline, EditOutlined } from '@material-ui/icons'
 import { DataGrid } from '@mui/x-data-grid'
 import NextLink from 'next/link'
-import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+import React, { useState, useEffect } from 'react'
 import PortalLayout from '../src/components/layout/PortalLayout'
 import DeletePopup from '../src/components/shared/DeletePopup'
 import LoadingView from '../src/components/shared/LoadingView'
@@ -11,15 +12,36 @@ import { useDeleteUserByIdMutation, useGetAllUserQuery } from '../src/generated/
 import { useCheckAuth } from '../src/utils/useCheckAuth'
 
 const UserList = () => {
-    const { data: allUser, loading: allUserLoading } = useGetAllUserQuery()
+    const router = useRouter()
     const [deleteUserById, { error, loading: deleteUserByIdLoading }] = useDeleteUserByIdMutation()
     const { data: authData, loading: authLoading } = useCheckAuth()
     const [currentUserId, setCurrentUserId] = useState('')
     const [open, setOpen] = useState(false)
+    const [page, setPage] = React.useState(0)
+    const [emailSearch, setEmailSearch] = useState('')
 
     const handleClickOpen = (id: string) => {
         setOpen(true)
         setCurrentUserId(id)
+    }
+
+    const { data: allUser, loading: allUserLoading } = useGetAllUserQuery({
+        variables: {
+            email: (router.query.email as string) || '',
+        },
+    })
+
+    useEffect(() => {
+        router.push({
+            search: `email=${emailSearch}&page=${page + 1}`, // query string
+        })
+    }, [page])
+
+    const handleFilter = () => {
+        setPage(0)
+        router.push({
+            search: `email=${emailSearch}&page=1`, // query string
+        })
     }
 
     const columns = [
@@ -85,9 +107,18 @@ const UserList = () => {
     return (
         <PortalLayout>
             <div className='userListButtonWrapper'>
-                <div className='userListButtonLeft'>Left</div>
+                <div className='userListButtonLeft'>
+                    <input
+                        className='userListProductNameFilter'
+                        placeholder='Email'
+                        value={emailSearch}
+                        onChange={(event) => setEmailSearch(event.target.value)}
+                    ></input>
+                </div>
                 <div className='userListButtonRight'>
-                    <button className='userListButtonFilter'>Filter</button>
+                    <button className='userListButtonFilter' onClick={handleFilter}>
+                        Filter
+                    </button>
                     <NextLink href='/user/create'>
                         <button className='userListButtonAdd'>Add</button>
                     </NextLink>
@@ -105,6 +136,7 @@ const UserList = () => {
                     rowsPerPageOptions={[5]}
                     // checkboxSelection
                     getRowId={(row) => row._id}
+                    onPageChange={(newPage) => setPage(newPage)}
                 />
             )}
 
